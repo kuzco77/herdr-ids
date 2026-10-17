@@ -1,0 +1,26 @@
+# herdr-plugin.toml — manifest for herdr-ids.
+#
+# One action (`show`) opens one popup pane (`picker`). The picker lists the ids of the
+# pane that was focused when the action fired and copies the chosen one to the clipboard.
+
+id = "herdr-ids"
+name = "Herdr IDs"
+version = "0.1.0"
+min_herdr_version = "0.9.0"
+description = "Popup that lists workspace, tab, pane and agent ids of the focused pane; press a number to copy one."
+platforms = ["macos", "linux"]
+
+[[panes]]
+id = "picker"
+title = "IDs"
+placement = "popup"
+width = 64
+height = 16
+command = ["bash", "scripts/picker.sh"]
+
+[[actions]]
+id = "show"
+title = "Show pane / tab / agent ids"
+description = "Open a popup listing the focused pane's ids. Press 1-7 to copy one, a for all, q to close."
+contexts = ["global", "pane"]
+command = ["bash", "scripts/open.sh"]
