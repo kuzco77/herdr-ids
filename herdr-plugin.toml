@@ -2,6 +2,9 @@
 #
 # One action (`show`) opens one popup pane (`picker`). The picker lists the ids of the
 # pane that was focused when the action fired and copies the chosen one to the clipboard.
+#
+# Startup and event hooks label every pane border "<name> - <pane id>" (scripts/labels.py).
+# Pane ids compact when tabs or panes close, so structural events relabel all panes.
 
 id = "herdr-ids"
 name = "Herdr IDs"
@@ -24,3 +27,60 @@ title = "Show pane / tab / agent ids"
 description = "Open a popup listing the focused pane's ids. Press 1-7 to copy one, a for all, q to close."
 contexts = ["global", "pane"]
 command = ["bash", "scripts/open.sh"]
+
+[[actions]]
+id = "labels-on"
+title = "Show pane ids on borders"
+description = "Label every pane border \"<name> - <pane id>\" and keep the labels current."
+contexts = ["global", "pane"]
+command = ["python3", "scripts/labels.py", "--on"]
+
+[[actions]]
+id = "labels-off"
+title = "Remove pane ids from borders"
+description = "Stop labelling; restore manual pane labels and clear the ones this plugin added."
+contexts = ["global", "pane"]
+command = ["python3", "scripts/labels.py", "--off"]
+
+[[startup]]
+command = ["python3", "scripts/labels.py"]
+
+[[events]]
+on = "pane.created"
+command = ["python3", "scripts/labels.py"]
+
+[[events]]
+on = "pane.closed"
+command = ["python3", "scripts/labels.py"]
+
+[[events]]
+on = "pane.moved"
+command = ["python3", "scripts/labels.py"]
+
+[[events]]
+on = "pane.updated"
+command = ["python3", "scripts/labels.py"]
+
+[[events]]
+on = "pane.agent_detected"
+command = ["python3", "scripts/labels.py"]
+
+[[events]]
+on = "tab.closed"
+command = ["python3", "scripts/labels.py"]
+
+[[events]]
+on = "tab.moved"
+command = ["python3", "scripts/labels.py"]
+
+[[events]]
+on = "workspace.closed"
+command = ["python3", "scripts/labels.py"]
+
+[[events]]
+on = "workspace.moved"
+command = ["python3", "scripts/labels.py"]
+
+[[events]]
+on = "workspace.reordered"
+command = ["python3", "scripts/labels.py"]
