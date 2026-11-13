@@ -61,6 +61,42 @@ Turn it off or on with the plugin actions (bind them like `show` if you use them
 
 Run `labels-off` before uninstalling, otherwise the last labels stay on the panes.
 
+## Herdr app
+
+The same popup ships as a mod for the Herdr desktop app (`herdr-app`), in
+`herdr-app/ids`. The TUI plugin above is unaffected; install either or both.
+
+```bash
+bash scripts/install-herdr-app.sh              # install / reinstall
+bash scripts/install-herdr-app.sh --uninstall
+```
+
+The installer links `herdr-app/ids` into `~/.config/herdr-app/mods/ids`, runs
+`herdr-app check` on it, and binds `ctrl-a i` to `mod.open:ids` in
+`~/.config/herdr-app/keys.json`. It stops before changing anything when `keys.json` is
+missing, is not valid JSON, or already binds `ctrl-a i` to something else, or when
+`mods/ids` exists and is not its link. `keys.json` is rewritten as 2-space JSON; the
+original is copied once to `keys.json.ids-backup`. Uninstall removes the key (only while
+it still opens `ids`) and the link.
+
+The app popup lists what the app knows about the focused pane:
+
+| Row | Value |
+|---|---|
+| `space` | space id (space name beside it) |
+| `tab` | tab id (tab name beside it) |
+| `pane` | pane id |
+| `terminal` | herdr-core address for `hc` (`t7`, or `machine/t7` for a remote terminal) |
+| `agent` | what the agent reports (`claude-code`), else the program name |
+| `status` | agent status |
+| `cwd` | folder |
+
+Rows without a value are left out, so the numbers can shift (a shell pane has no
+`agent` or `status`). herdr-core reports no agent session id, so the app popup has no
+`agent session` row. The keys are the same as in the TUI, and clicking a row copies it.
+Pane border labels are TUI only: in the app, a pane header mod
+(e.g. herdr-accept-tool's `accept-header`) shows the terminal address.
+
 ## Keys in the popup
 
 | Key | Action |
@@ -76,6 +112,8 @@ A toast confirms what was copied.
 - herdr `>= 0.9.0`
 - `bash`, `python3`
 - a clipboard tool: `pbcopy` (macOS), `wl-copy`, `xclip` or `xsel` (Linux)
+- Herdr app mod: `herdr-app` on `PATH` and `python3` for the installer; the app copies
+  through its own clipboard
 
 ## Notes
 
@@ -86,6 +124,13 @@ A toast confirms what was copied.
   until the next pane event.
 - `agent session` is the agent's session uuid as reported by herdr (`agent_session.value`).
 - Local development: `herdr plugin link /path/to/herdr-ids`.
+
+## Tests
+
+```bash
+python3 -m unittest discover -s tests -v
+node --test tests/js/
+```
 
 ## License
 
